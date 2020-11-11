@@ -26,31 +26,28 @@ def findEncodings(images):
         encodeList.append(encode)
     return encodeList
 
-
-
-
-#### FOR CAPTURING SCREEN RATHER THAN WEBCAM
-# def captureScreen(bbox=(300,300,690+300,530+300)):
-#     capScr = np.array(ImageGrab.grab(bbox))
-#     capScr = cv2.cvtColor(capScr, cv2.COLOR_RGB2BGR)
-#     return capScr
-
 encodeListKnown = findEncodings(images)
 print('Encoding Complete')
 
 cap = cv2.VideoCapture(0)
 
 while True:
-    success, img = cap.read()
-# img = captureScreen()
-imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
-imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
+    _, img = cap.read()
+    imgS = cv2.resize(img, (0, 0), None, 0.25, 0.25)
+    imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
+    facesCurFrame = face_recognition.face_locations(imgS)
+    encodesCurFrame = face_recognition.face_encodings(imgS, facesCurFrame)
 
-facesCurFrame = face_recognition.face_locations(imgS)
-encodesCurFrame = face_recognition.face_encodings(imgS, facesCurFrame)
+    for encodeFace, faceLoc in zip(encodesCurFrame, facesCurFrame):
+        matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+        faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+        print(faceDis)
+        matchIndex = np.argmin(faceDis)
 
-for encodeFace, faceLoc in zip(encodesCurFrame, facesCurFrame):
-    matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
-    faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-    print(faceDis)
-    #matchIndex = np.argmin(faceDis)
+        if matches[matchIndex]:
+            names = classNames[matchIndex].upper()
+            print(names)
+
+    cv2.imshow('Webcam', img)
+    cv2.waitKey()
+

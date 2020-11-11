@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 import face_recognition
 
-imgStudent = face_recognition.load_image_file("ImagesBasic/Swapnil.PNG")
+imgStudent = face_recognition.load_image_file("ImagesBasic/Jahirul Haque Onik.jpg")
 imgStudent = cv2.cvtColor(imgStudent, cv2.COLOR_BGR2RGB)
-imgTest = face_recognition.load_image_file("ImagesBasic/Swapnil.PNG")
+imgTest = face_recognition.load_image_file("ImagesBasic/Rahat.PNG")
 imgTest = cv2.cvtColor(imgTest, cv2.COLOR_BGR2RGB)
 
 faceLoc = face_recognition.face_locations(imgStudent)[0]
